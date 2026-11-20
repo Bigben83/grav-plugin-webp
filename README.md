@@ -38,6 +38,9 @@ If you use the Admin Plugin, you can install the plugin directly by browsing the
 
 ## Requirements
 
+- Grav 2.0 or newer
+- PHP 8.3 or newer
+
 Make sure that You have installed and enabled webp support:
 
 - install system packages: libwebp-dev, webp
