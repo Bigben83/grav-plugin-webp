@@ -1,3 +1,20 @@
+# v2.0.0
+##  11/20/2026
+
+1. [](#new)
+    * Grav 2 support. The plugin now requires Grav 2.0+ and PHP 8.3+
+    * Added a Grav 2 smoke test and a GitHub Actions workflow running the tests
+2. [](#improved)
+    * Updated Symfony Finder & Filesystem to 7.x, `vendor` no longer contains development dependencies
+    * Twig filters are registered with `Twig\TwigFilter`
+    * Console commands look up a single image directly instead of scanning the whole Grav root
+    * Updated README
+3. [](#bugfix)
+    * Fixed fatal error for images with mirrored EXIF orientation
+    * Fixed `clear --all` error when no image has been converted yet
+    * Fixed exit codes of console commands (`0` on success, `1` on failure)
+    * Fixed `--path` option of console commands on Windows
+
 # v1.5.0
 ##  02/21/2025
 

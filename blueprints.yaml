@@ -1,7 +1,7 @@
 name: Webp
 slug: webp
 type: plugin
-version: 1.5.0
+version: 2.0.0
 description: Webp image conversion
 icon: image
 author:
@@ -14,8 +14,11 @@ bugs: https://github.com/greenrivers/grav-plugin-webp/issues
 docs: https://github.com/greenrivers/grav-plugin-webp/blob/develop/README.md
 license: MIT
 
+compatibility:
+  grav: ['2.0']
+
 dependencies:
-  - { name: grav, version: '>=1.6.0' }
+  - { name: grav, version: '>=2.0.0' }
 
 form:
   validation: loose

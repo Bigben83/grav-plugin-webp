@@ -18,9 +18,6 @@ use Symfony\Component\Finder\Finder;
 
 class Webp
 {
-    /** @var Finder */
-    private $finder;
-
     /** @var File */
     private $file;
 
@@ -41,7 +38,6 @@ class Webp
      */
     public function __construct()
     {
-        $this->finder = new Finder();
         $this->file = new File();
         $this->image = new Image();
         $this->converter = new Converter();
@@ -65,14 +61,7 @@ class Webp
             }
         }
 
-        $images = $this->finder
-            ->ignoreDotFiles(false)
-            ->files()
-            ->in($folders)
-            ->exclude('node_modules')
-            ->name($extensions);
-
-        foreach ($images as $image) {
+        foreach ($this->findImages($folders, $extensions) as $image) {
             $webpPath = $this->image->getWebpPath(
                 $originalPath,
                 $image->getPathInfo()->getPathname(),
@@ -101,14 +90,14 @@ class Webp
         ];
         $extensions = ['*.webp'];
 
-        $images = $this->finder
-            ->ignoreDotFiles(false)
-            ->files()
-            ->in($folders)
-            ->exclude('node_modules')
-            ->name($extensions);
+        // Finder throws for folders that don't exist, e.g. user/webp before the first conversion.
+        $folders = array_filter($folders, [$this->file, 'fileExists']);
 
-        foreach ($images as $image) {
+        if (!$folders) {
+            return $imagesToRemove;
+        }
+
+        foreach ($this->findImages($folders, $extensions) as $image) {
             $imagesToRemove[] = $this->image->getImageData($image);
         }
 
@@ -169,5 +158,20 @@ class Webp
     public function getImageExtension(string $imagePath): string
     {
         return $this->view->getImageExtension($imagePath);
+    }
+
+    /**
+     * @param string[] $folders
+     * @param string[] $extensions
+     * @return Finder
+     */
+    private function findImages(array $folders, array $extensions): Finder
+    {
+        return (new Finder())
+            ->ignoreDotFiles(false)
+            ->files()
+            ->in($folders)
+            ->exclude('node_modules')
+            ->name($extensions);
     }
 }

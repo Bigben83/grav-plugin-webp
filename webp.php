@@ -17,6 +17,7 @@ use Grav\Plugin\Webp\Helper\Config;
 use Grav\Plugin\Webp\Utils\Response;
 use Grav\Plugin\Webp\Webp;
 use RocketTheme\Toolbox\Event\Event;
+use Twig\TwigFilter;
 
 class WebpPlugin extends Plugin
 {
@@ -185,11 +186,11 @@ class WebpPlugin extends Plugin
             $gravTwig = $this->grav['twig'];
 
             $gravTwig->twig()->addFilter(
-                new \Twig_SimpleFilter('webp', [$this, 'webp'])
+                new TwigFilter('webp', [$this, 'webp'])
             );
 
             $gravTwig->twig()->addFilter(
-                new \Twig_SimpleFilter('extension', [$this, 'extension'])
+                new TwigFilter('extension', [$this, 'extension'])
             );
         }
     }

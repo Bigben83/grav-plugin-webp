@@ -16,16 +16,6 @@ class Logger
      * @param string $message
      * @return void
      */
-    public static function addInfoMessage(string $message): void
-    {
-        $logger = self::getLogger();
-        $logger->info($message);
-    }
-
-    /**
-     * @param string $message
-     * @return void
-     */
     public static function addErrorMessage(string $message): void
     {
         $logger = self::getLogger();

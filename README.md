@@ -38,6 +38,9 @@ If you use the Admin Plugin, you can install the plugin directly by browsing the
 
 ## Requirements
 
+- Grav 2.0 or newer
+- PHP 8.3 or newer
+
 Make sure that You have installed and enabled webp support:
 
 - install system packages: libwebp-dev, webp
@@ -61,6 +64,10 @@ Note that if you use the Admin Plugin, a file with your configuration named webp
 ## Usage
 
 #### Plugin config
+
+> NOTE: The **Quality**, **Convert** and **Clear all** controls described below are custom fields for the classic Admin plugin.
+> Admin2, the admin panel of Grav 2, doesn't load classic admin field templates, so with Admin2 set `quality` in
+> `user/config/plugins/webp.yaml` and use the [console commands](#console-commands) to convert & clear images.
 
 1. Original path
     - Enable to save the webp image in the same directory as the original image
@@ -144,6 +151,16 @@ Source from variable.
 <img alt="webp image" src="{{ url(logo)|webp }}">
 ```
 
+The filters work out of the box in theme and plugin templates. Twig in page content is sandboxed in Grav 2,
+so to use them there (pages with `process: twig: true`) allow them in `user/config/security.yaml`:
+
+```yaml
+twig_sandbox:
+  allowed_filters:
+    - webp
+    - extension
+```
+
 ### Issues:
 
 Sometimes after plugin activation You can see text field instead of button & progressbar.<br/>
@@ -153,10 +170,30 @@ To resolve it, save config again with **Enabled** status.
 
 ## Testing
 
-Run unit tests from root plugin path (**user/plugins/webp**):
+#### Unit tests
+
+The committed `vendor` directory only contains the packages the plugin needs at runtime.
+Install the development tools first, then run the unit tests from root plugin path (**user/plugins/webp**):
 
 ```
+composer install
 php vendor/bin/codecept run unit
+```
+
+Don't commit the `vendor` directory in this state. To restore the runtime-only version (also after changing dependencies), run:
+
+```
+composer install --no-dev --optimize-autoloader
+```
+
+#### Grav smoke test
+
+The smoke test boots a real Grav 2 installation and checks that the plugin loads,
+the twig filters are registered and the console commands convert & clear an image.
+Run it from the Grav root path, with the plugin installed in **user/plugins/webp** and enabled:
+
+```
+php user/plugins/webp/tests/smoke/smoke.php
 ```
 
 ## Credits
