@@ -65,6 +65,10 @@ Note that if you use the Admin Plugin, a file with your configuration named webp
 
 #### Plugin config
 
+> NOTE: The **Quality**, **Convert** and **Clear all** controls described below are custom fields for the classic Admin plugin.
+> Admin2, the admin panel of Grav 2, doesn't load classic admin field templates, so with Admin2 set `quality` in
+> `user/config/plugins/webp.yaml` and use the [console commands](#console-commands) to convert & clear images.
+
 1. Original path
     - Enable to save the webp image in the same directory as the original image
     - Disable to save the webp image in the user/webp directory
@@ -145,6 +149,16 @@ Source from variable.
 
 ```html
 <img alt="webp image" src="{{ url(logo)|webp }}">
+```
+
+The filters work out of the box in theme and plugin templates. Twig in page content is sandboxed in Grav 2,
+so to use them there (pages with `process: twig: true`) allow them in `user/config/security.yaml`:
+
+```yaml
+twig_sandbox:
+  allowed_filters:
+    - webp
+    - extension
 ```
 
 ### Issues:
