@@ -150,11 +150,9 @@ class ConvertCommand extends ConsoleCommand
                     $image->getFilenameWithoutExtension()
                 );
 
-                $imageExists = $this->file->fileExists($path);
-                $webpExistsAndOverride = $this->file->fileExists($webpPath) && $override;
-                $webpNotExists = !$this->file->fileExists($webpPath);
+                $webpExists = $this->file->fileExists($webpPath);
 
-                if ($imageExists && ($webpExistsAndOverride || $webpNotExists)) {
+                if (!$webpExists || $override) {
                     $result = $this->converter->convert($imageData, $originalPath, $quality);
                     $message = $lang->translate(['PLUGIN_WEBP.CONVERSION_SUCCESS_MESSAGE', $webpPath]);
                 } else {
