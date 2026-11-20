@@ -90,6 +90,13 @@ class Webp
         ];
         $extensions = ['*.webp'];
 
+        // Finder throws for folders that don't exist, e.g. user/webp before the first conversion.
+        $folders = array_filter($folders, [$this->file, 'fileExists']);
+
+        if (!$folders) {
+            return $imagesToRemove;
+        }
+
         foreach ($this->findImages($folders, $extensions) as $image) {
             $imagesToRemove[] = $this->image->getImageData($image);
         }
