@@ -28,6 +28,8 @@ class Image
     private const JPG_TYPE = 2;
     private const PNG_TYPE = 3;
 
+    private const ORIENTATION_QUALITY = 100;
+
     /**
      * @param SplFileInfo $image
      * @param bool $cli
@@ -84,10 +86,9 @@ class Image
      * Auto-rotate image based on EXIF data
      *
      * @param string $imagePath
-     * @param int $quality
      * @return void
      */
-    public static function adjustImageOrientation(string $imagePath, int $quality = 100): void
+    public static function adjustImageOrientation(string $imagePath): void
     {
         try {
             $exifData = @exif_read_data($imagePath);
@@ -150,13 +151,13 @@ class Image
 
                 switch (@exif_imagetype($imagePath)) {
                     case self::JPG_TYPE:
-                        @imagejpeg($image, $imagePath, $quality);
+                        @imagejpeg($image, $imagePath, self::ORIENTATION_QUALITY);
                         break;
                     case self::PNG_TYPE:
-                        @imagepng($image, $imagePath, $quality);
+                        @imagepng($image, $imagePath, self::ORIENTATION_QUALITY);
                         break;
                     default:
-                        @imagejpeg($image, $imagePath, $quality);
+                        @imagejpeg($image, $imagePath, self::ORIENTATION_QUALITY);
                 }
             }
         }
