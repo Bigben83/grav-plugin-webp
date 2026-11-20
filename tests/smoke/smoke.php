@@ -146,10 +146,11 @@ try {
     );
 
     // 2. CLI: convert a single image.
-    [, $output] = runPluginCommand('convert', '--path=' . $cliPath($imagePath));
+    [$exitCode, $output] = runPluginCommand('convert', '--path=' . $cliPath($imagePath));
     $webpPath = current(array_filter($webpPaths, 'is_file'));
 
     if (check($webpPath !== false, 'CLI "convert --path" creates the webp file', $output)) {
+        check($exitCode === 0, 'CLI "convert --path" exits with 0 on success', "Exit code: $exitCode");
         check(exif_imagetype($webpPath) === IMAGETYPE_WEBP, 'converted file is a valid webp image');
 
         if (DIRECTORY_SEPARATOR === '/') {
@@ -165,10 +166,14 @@ try {
         }
 
         // 3. CLI: remove it again.
-        [, $output] = runPluginCommand('clear', '--path=' . $cliPath($webpPath));
+        [$exitCode, $output] = runPluginCommand('clear', '--path=' . $cliPath($webpPath));
         clearstatcache();
         check(!is_file($webpPath), 'CLI "clear --path" removes the webp file', $output);
+        check($exitCode === 0, 'CLI "clear --path" exits with 0 on success', "Exit code: $exitCode");
     }
+
+    [$exitCode] = runPluginCommand('convert', '--path=' . $cliPath('user/images/' . FIXTURE_NAME . '-missing.jpg'));
+    check($exitCode === 1, 'CLI "convert --path" exits with 1 when the image is not found', "Exit code: $exitCode");
 } catch (Throwable $e) {
     check(false, 'smoke test ran to completion', get_class($e) . ': ' . $e->getMessage() . "\n" . $e->getTraceAsString());
 } finally {

@@ -120,10 +120,9 @@ class ConvertCommand extends ConsoleCommand
             $messageType = self::MESSAGE_TYPE_ERROR;
         }
 
-        $status = $result | 0;
         $this->printMessage($message, $messageType);
 
-        return $status;
+        return $result ? self::SUCCESS : self::FAILURE;
     }
 
     /**
