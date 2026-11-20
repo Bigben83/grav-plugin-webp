@@ -92,7 +92,10 @@ class ImageTest extends Unit
 
         $result = $this->image->getWebpPath($originalPath, $pathname, $filenameWithoutExtension);
 
-        $this->assertEquals('user/webp/user/themes/quark/thumbnail.webp', $result);
+        $this->assertEquals(
+            'user/webp' . DIRECTORY_SEPARATOR . 'user/themes/quark' . DIRECTORY_SEPARATOR . 'thumbnail.webp',
+            $result
+        );
     }
 
     /**
@@ -106,7 +109,7 @@ class ImageTest extends Unit
 
         $result = $this->image->getWebpPath($originalPath, $pathname, $filenameWithoutExtension);
 
-        $this->assertEquals('user/themes/quark/thumbnail.webp', $result);
+        $this->assertEquals('user/themes/quark' . DIRECTORY_SEPARATOR . 'thumbnail.webp', $result);
     }
 
     /**
@@ -118,6 +121,6 @@ class ImageTest extends Unit
 
         $result = $this->image->getWebpDir($pathname);
 
-        $this->assertEquals('user/webp/user/themes/quark', $result);
+        $this->assertEquals('user/webp' . DIRECTORY_SEPARATOR . 'user/themes/quark', $result);
     }
 }
