@@ -146,7 +146,8 @@ class Image
                 }
 
                 if ($mirror) {
-                    $image = @imageflip($image, IMG_FLIP_HORIZONTAL);
+                    // imageflip() works in place and returns a bool, so its result must not replace the image.
+                    @imageflip($image, IMG_FLIP_HORIZONTAL);
                 }
 
                 switch (@exif_imagetype($imagePath)) {
