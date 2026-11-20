@@ -156,10 +156,30 @@ To resolve it, save config again with **Enabled** status.
 
 ## Testing
 
-Run unit tests from root plugin path (**user/plugins/webp**):
+#### Unit tests
+
+The committed `vendor` directory only contains the packages the plugin needs at runtime.
+Install the development tools first, then run the unit tests from root plugin path (**user/plugins/webp**):
 
 ```
+composer install
 php vendor/bin/codecept run unit
+```
+
+Don't commit the `vendor` directory in this state. To restore the runtime-only version (also after changing dependencies), run:
+
+```
+composer install --no-dev --optimize-autoloader
+```
+
+#### Grav smoke test
+
+The smoke test boots a real Grav 2 installation and checks that the plugin loads,
+the twig filters are registered and the console commands convert & clear an image.
+Run it from the Grav root path, with the plugin installed in **user/plugins/webp** and enabled:
+
+```
+php user/plugins/webp/tests/smoke/smoke.php
 ```
 
 ## Credits
