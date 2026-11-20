@@ -7,19 +7,15 @@
 
 namespace Grav\Plugin\Webp\Helper;
 
-use Exception;
-use Grav\Plugin\Webp\Utils\Logger;
 use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 
 class File
 {
+    private const IMAGE_EXTENSIONS = ['jpg', 'jpeg', 'png', 'webp'];
+
     /** @var Filesystem */
     private $filesystem;
-
-    /** @var Finder */
-    private $finder;
 
     /**
      * File constructor.
@@ -27,7 +23,6 @@ class File
     public function __construct()
     {
         $this->filesystem = new Filesystem();
-        $this->finder = new Finder();
     }
 
     /**
@@ -40,34 +35,34 @@ class File
     }
 
     /**
-     * @param string $filename
+     * Returns the image at the given path, as long as it is a jpg/jpeg/png/webp file inside the Grav root.
+     *
+     * @param string $filename path relative to the Grav root, or an absolute path inside it
      * @return SplFileInfo|null
      */
     public function getFile(string $filename): ?SplFileInfo
     {
-        $file = null;
         $filename = $this->stringStartsWith($filename, ROOT_DIR) ? $filename : ROOT_DIR . $filename;
 
-        $extensions = ['*.jpg', '*.jpeg', '*.png', '*.webp'];
-        $finder = $this->finder
-            ->in(ROOT_DIR)
-            ->files()
-            ->name($extensions)
-            ->filter(static function (SplFileInfo $file) use ($filename) {
-                return $file->isFile() && $file->getPathname() === $filename;
-            });
+        // Resolve both paths, so that "..", symlinks and mixed separators cannot point outside the Grav root.
+        $root = realpath(ROOT_DIR);
+        $pathname = realpath($filename);
 
-        if ($finder->hasResults()) {
-            try {
-                $iterator = $finder->getIterator();
-                $iterator->rewind();
-                $file = $iterator->current();
-            } catch (Exception $e) {
-                Logger::addErrorMessage($e->getMessage());
-            }
+        if (
+            $root === false ||
+            $pathname === false ||
+            !is_file($pathname) ||
+            !$this->stringStartsWith($pathname, $root . DIRECTORY_SEPARATOR)
+        ) {
+            return null;
         }
 
-        return $file;
+        $relativePathname = substr($pathname, strlen($root) + 1);
+        $relativePath = dirname($relativePathname);
+
+        $file = new SplFileInfo($pathname, $relativePath === '.' ? '' : $relativePath, $relativePathname);
+
+        return in_array($file->getExtension(), self::IMAGE_EXTENSIONS, true) ? $file : null;
     }
 
     /**
